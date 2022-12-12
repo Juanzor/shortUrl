@@ -1,0 +1,21 @@
+<%- include('partials/head', {title: "Home"}); %> <%- include('partials/navbar'); %>
+
+<main class="container">
+    <h1 class="my-5 text-center">Registro</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="/user/register" method="POST">
+                <input type="text" name="userName" class="form-control mb-3" placeholder="Ingrese nombre" />
+                <input type="text" name="email" class="form-control mb-3" placeholder="Ingrese email" />
+                <input type="password" name="password" class="form-control mb-3" placeholder="Ingrese contraseña" />
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control mb-3"
+                    placeholder="Confirmar contraseña"
+                />
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+            </form>
+        </div>
+    </div>
+</main>

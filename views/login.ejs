@@ -1,2 +1,15 @@
-<%- include('partials/head', {title: "Home"}); %> <%- include('partials/navbar'); %>
-<h1>login!!</h1>
+<%- include('partials/head', {title: "Login"}); %> <%- include('partials/navbar'); %>
+
+<main class="container">
+    <h1 class="my-5 text-center">Login</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="/user/login" method="POST">
+                <input type="text" name="email" class="form-control mb-3" placeholder="Ingrese email" />
+                <input type="password" name="password" class="form-control mb-3" placeholder="Ingrese contraseña" />
+
+                <button type="submit" class="btn btn-primary">Loguearse</button>
+            </form>
+        </div>
+    </div>
+</main>

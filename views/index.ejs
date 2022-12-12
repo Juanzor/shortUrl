@@ -4,18 +4,35 @@
 
     <body>
         <main class="container">
-            <h1 class="my-5">Home!</h1>
+            <h1 class="my-5">Agregar Urls</h1>
+
+            <form action="/agregarUrl" method="POST" class="mb-5">
+                <input type="text" placeholder="Ingresar Url" name="origin" class="form-control my-2" />
+                <button type="submit" class="btn btn-primary w-100 mb-2">Agregar</button>
+            </form>
+
+            <% urls.forEach(e => { %>
 
             <article class="card mb-4">
                 <div class="card-body">
-                    <p>google.com</p>
-                    <p>shortGoogle!</p>
-                    <a href="#" class="btn btn-danger">Eliminar</a>
-                    <a href="#" class="btn btn-warning">Editar</a>
-                    <a href="#" class="btn btn-info">Copiar</a>
+                    <p><%= e.origin %></p>
+                    <p><%= e.shortUrl %></p>
+
+                    <form class="d-inline-block" action="/eliminarUrl/<%= e._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+
+                    <form class="d-inline-block" action="/editarUrl/<%= e._id %>">
+                        <button type="submit" class="btn btn-warning">Editar</button>
+                    </form>
+
+                    <button class="btn btn-info"  data-short="<%= e.shortUrl %>">Copiar</button>
                 </div>
             </article>
+            <% }) %>
         </main>
+
+        <script src="/javascripts/index.js"></script>
 
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
