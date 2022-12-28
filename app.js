@@ -38,6 +38,7 @@ app.use(
         saveUninitialized: false,
         name: "session-user",
         store: MongoStore.create({ clientPromise: clientDB, dbName: process.env.DB_NAME }),
+            
 
         cookie: { secure: process.env.MODO == "production", maxAge: 30 * 24 * 60 * 60 * 1000 }, // no funca en desarollo!!
     })
