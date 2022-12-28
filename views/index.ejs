@@ -5,10 +5,14 @@
     <body>
         <main class="container">
             <h1 class="my-5">Agregar Urls</h1>
+            <% mensajes.forEach(m => { %>
+            <div class="alert alert-dark mb-2"><%= m.msg %></div>
 
+            <% }) %>
             <form action="/agregarUrl" method="POST" class="mb-5">
                 <input type="text" placeholder="Ingresar Url" name="origin" class="form-control my-2" />
                 <button type="submit" class="btn btn-primary w-100 mb-2">Agregar</button>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             </form>
 
             <% urls.forEach(e => { %>
@@ -19,14 +23,18 @@
                     <p><%= e.shortUrl %></p>
 
                     <form class="d-inline-block" action="/eliminarUrl/<%= e._id %>?_method=DELETE" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
 
                     <form class="d-inline-block" action="/editarUrl/<%= e._id %>">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
                         <button type="submit" class="btn btn-warning">Editar</button>
                     </form>
 
-                    <button class="btn btn-info"  data-short="<%= e.shortUrl %>">Copiar</button>
+                    <button class="btn btn-info" data-short="<%= e.shortUrl %>">Copiar</button>
                 </div>
             </article>
             <% }) %>

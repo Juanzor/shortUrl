@@ -5,9 +5,16 @@
         <h1 class="my-5">Editar Url</h1>
 
         <form action="/editarUrl/<%= url._id %>?_method=PUT" method="POST" class="mb-5">
-            <input type="text" value="<%= url.origin  %>" placeholder="Ingresar Url" name="origin" class="form-control my-2" />
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+
+            <input
+                type="text"
+                value="<%= url.origin  %>"
+                placeholder="Ingresar Url"
+                name="origin"
+                class="form-control my-2"
+            />
             <button type="submit" class="btn btn-warning w-100 mb-2">Editar</button>
         </form>
-        
     </main>
 </body>

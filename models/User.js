@@ -8,6 +8,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     tokenConfirm: { type: String, default: null },
     cuentaConfirmada: { type: Boolean, default: false },
+    imagen: { type: String, default: null },
 });
 
 userSchema.pre("save", async function (next) {

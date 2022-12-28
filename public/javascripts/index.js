@@ -1,9 +1,10 @@
-
 document.addEventListener("click", (e) => {
-    const shortUrl = `http://localhost:3000/${e.target.dataset.short}`;
+    if (e.target.dataset.short) {
+        const shortUrl = `${location.origin}/${e.target.dataset.short}`;
 
-    navigator.clipboard
-        .writeText(shortUrl)
-        .then(() => console.log("Copiado"))
-        .catch(() => console.log(e));
+        navigator.clipboard
+            .writeText(shortUrl)
+            .then(() => console.log("Copiado"))
+            .catch(() => console.log(e));
+    }
 });

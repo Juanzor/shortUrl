@@ -1,32 +1,52 @@
 const User = require("../models/User");
+const { validationResult } = require("express-validator");
 const { nanoid } = require("nanoid");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const controller = {
     loginForm: (req, res) => {
-        res.render("login");
+        return res.render("login", { mensajes: req.flash("mensajes") });
     },
 
     login: async (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            req.flash("mensajes", errors.array());
+            return res.redirect("/user/login");
+        }
+
+        const { email, password } = req.body;
         try {
-            const { email, password } = req.body;
             const user = await User.findOne({ email });
 
-            if (!user) throw new Error("User not found");
+            if (!user) throw new Error("No existe ese email");
 
             if (!user.cuentaConfirmada) throw new Error("Cuenta no confirmada");
 
             if (!(await user.comparePassword(password))) throw new Error("Contraseña incorrecta");
+            req.login(user, (err) => {
+                if (err) throw new Error("Super error");
 
-            res.redirect("/");
+                return res.redirect("/");
+            });
         } catch (error) {
-            res.json({ error: error.message });
-            console.log(error);
+            req.flash("mensajes", [{ msg: error.message }]);
+            return res.redirect("/user/login");
         }
     },
     registerForm: (req, res) => {
-        res.render("register");
+        res.render("register", { mensajes: req.flash("mensajes") });
     },
     register: async (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            req.flash("mensajes", errors.array());
+            return res.redirect("/user/register");
+        }
+
         const { userName, password, email } = req.body;
 
         try {
@@ -41,9 +61,31 @@ const controller = {
             });
 
             await user.save();
-            res.redirect("/user/login");
+
+            const transport = nodemailer.createTransport({
+                host: "smtp.mailtrap.io",
+                port: 2525,
+                auth: {
+                    user: process.env.USEREMAIL,
+                    pass: process.env.PASSEMAIL,
+                },
+            });
+
+            await transport.sendMail({
+                from: '"Fred Foo 👻" <foo@example.com>', // sender address
+                to: user.email, // list of receivers
+                subject: "Verifica tu cuenta ✔", // Subject line
+                text: "Hello world?", // plain text body
+                html: `<a href= "${process.env.PATHEROKU || 'http://localhost:3000'}/user/confirmar/${
+                    user.tokenConfirm
+                }">Verifica tu cuenta</a>`, // html body
+            });
+
+            req.flash("mensajes", [{ msg: "Revisa tu correo electronico y valida tu cuenta" }]);
+            return res.redirect("/user/login");
         } catch (error) {
-            console.log(error);
+            req.flash("mensajes", [{ msg: error.message }]);
+            return res.redirect("/user/register");
         }
     },
     confirmarCuenta: async (req, res) => {
@@ -58,11 +100,16 @@ const controller = {
             user.cuentaConfirmada = true;
 
             await user.save();
+            req.flash("mensajes", [{ msg: "Cuenta verificada" }]);
 
-            res.redirect("/user/login");
+            return res.redirect("/user/login");
         } catch (error) {
-            console.log(error);
+            req.flash("mensajes", [{ msg: error.message }]);
+            res.redirect("/user/login");
         }
+    },
+    logout: (req, res) => {
+        req.logout(() => res.redirect("/user/login"));
     },
 };
 

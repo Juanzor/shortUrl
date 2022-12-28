@@ -1,4 +1,3 @@
-const { log } = require("console");
 const { URL } = require("url");
 const urlValidator = (req, res, next) => {
     try {
@@ -8,10 +7,11 @@ const urlValidator = (req, res, next) => {
         if (urlFront !== "null") {
             return next();
         } else {
-            throw new Error("Invalid");
+            throw new Error("Ruta invalida");
         }
     } catch (error) {
-        return res.send("URL no valida");
+        req.flash("mensajes", [{ msg: error.message }]);
+        return res.redirect("/");
     }
 };
 
